@@ -38,7 +38,7 @@ jobs:
     - name: Collect Artifacts
       run: |
         mkdir -p /builder/workspace/artifacts
-        cp -r bin/packages/*/custom/* /builder/workspace/artifacts/ || true
+        cp -r bin/packages/* /builder/workspace/artifacts/ || true
 
     - name: Setup Pages
       uses: actions/configure-pages@v4
