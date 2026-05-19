@@ -53,10 +53,13 @@ jobs:
           [ -x ./staging_dir/host/bin/usign ] && [ ! -f key-build ] && ./staging_dir/host/bin/usign -G -s ./key-build -p ./key-build.pub -c 'Build key'
           make package/index V=s CONFIG_SIGNED_PACKAGES=
           
-          # Copy artifacts
+          # Copy all artifacts from the custom architecture directory
           mkdir -p /custom_feed/artifacts/aarch64_cortex-a53
-          find bin/packages/aarch64_cortex-a53/custom/ -name '*.ipk' -exec cp {} /custom_feed/artifacts/aarch64_cortex-a53/ \;
-          find bin/packages/aarch64_cortex-a53/custom/ -name 'Packages*' -exec cp {} /custom_feed/artifacts/aarch64_cortex-a53/ \;
+          cp -v bin/packages/aarch64_cortex-a53/custom/* /custom_feed/artifacts/aarch64_cortex-a53/
+          
+          # List files for verification
+          echo \"Contents of artifacts:\"
+          ls -lh /custom_feed/artifacts/aarch64_cortex-a53/
         "
 
     - name: Setup Pages
