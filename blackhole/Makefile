@@ -60,4 +60,5 @@ define Package/blackhole/install
 	$(INSTALL_BIN) $(PKG_BUILD_DIR)/files/blackhole.init $(1)/etc/init.d/blackhole
 endef
 
+$(eval $(call GoPackage,blackhole))
 $(eval $(call BuildPackage,blackhole))
