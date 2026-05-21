@@ -79,25 +79,25 @@ jobs:
           ./scripts/feeds update -a
           ./scripts/feeds install golang
           
-          # Verify golang installation
-          [ -f feeds/packages/lang/golang/golang-package.mk ] || { echo 'golang-package.mk NOT found in feeds!'; ls -R feeds/packages/lang/golang; }
-          
           # Force link into include
           mkdir -p include
           ln -sf ../feeds/packages/lang/golang/golang-package.mk include/golang-package.mk
           ln -sf ../feeds/packages/lang/golang/golang-values.mk include/golang-values.mk
           
-          # Build golang host tools
-          make package/golang/compile V=s || { echo 'Golang build failed'; exit 1; }
-          
           echo 'src-link custom /custom_feed' >> feeds.conf.default
           ./scripts/feeds update custom
           ./scripts/feeds install -a
           
+          # Initialize config
           make defconfig
-          echo 'CONFIG_PACKAGE_blackhole=y' >> .config
-          echo 'CONFIG_PACKAGE_luci-app-blackhole=y' >> .config
-          make defconfig
+          ./scripts/config --enable PACKAGE_blackhole
+          ./scripts/config --enable PACKAGE_luci-app-blackhole
+          ./scripts/config --enable PACKAGE_golang
+          make oldconfig
+          
+          # Build golang host tools
+          # Using -j$(nproc) to speed up if possible, but SDK might be sensitive
+          make package/golang/compile V=s || { echo 'Golang build failed'; exit 1; }
           
           # List some environment info
           echo \"Staging host bin contents:\"
